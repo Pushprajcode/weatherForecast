@@ -27,8 +27,9 @@ export default function HomeScreen() {
   const {HEIGHT} = NativeModules?.StatusBarManager;
   const [temperature, setTemperature] = React.useState(null);
   const {current} = useSelector(Store => Store.ForecastReducer);
-  const apiUrl = `https://api.weatherapi.com/v1/current.json?key=437b42a4ae70478eb8271532230903&q=${location.lat}, ${location.long}&aqi=yes`;
-  console.log(current.condition.text);
+  const apiUrl = `https://api.weatherapi.com/v1/forecast.json?key=437b42a4ae70478eb8271532230903&q=${location.lat}, ${location.long}&days=5&aqi=yes&alerts=yes`;
+  // http://api.weatherapi.com/v1/forecast.json?key=3b0e1975ea6e4c6e9dd124408230703&q=28.6278956,77.3057513&days=5&aqi=yes&alerts=yes
+  console.log(current.con);
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -90,7 +91,7 @@ export default function HomeScreen() {
     getWeatherApi(
       apiUrl,
       response => {
-        console.log(response);
+        console.log('response',response);
         setTemperature(response.current.temp_c);
         // console.log(`${response.current.temp_c}`);
       },
@@ -185,8 +186,40 @@ export default function HomeScreen() {
         style={{
           color: 'lightgrey',
         }}>
-        {current.condition.text}
+        {current?.condition?.text}
       </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          width: '90%',
+          justifyContent: 'space-between',
+          marginVertical: 20,
+          alignItems: 'center',
+        }}>
+        <Text style={{color: 'white', fontSize: 20}}>Today</Text>
+        <Text style={{color: '#5491E2', fontSize: 21}}>View Full Report</Text>
+      </View>
+      <FlatList
+        data={['', '', '', '', '', '', '', '', '', '', '', '', '', '', '']}
+        horizontal
+        style={{width: '90%',borderRadius: 13,backgroundColor: '#2566A333',}}
+        bounces={false}
+        contentContainerStyle={{
+          // width: '90%',
+          paddingVertical: 20,
+          paddingRight: 15,
+          
+          
+          // height: '86%',
+        }}
+        renderItem={() => {
+          return (
+            <View style={{borderWidth: 1,marginLeft: 15,borderRadius: 25,padding: 16,}}>
+              <Text style={{color: 'white',fontSize: 23,}}>28°C</Text>
+            </View>
+          );
+        }}
+      />
     </LinearGradient>
   );
 }
