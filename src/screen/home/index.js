@@ -15,18 +15,20 @@ import localImages from '../../utils/localImages';
 import {getWeatherApi} from '../../redux/action/index';
 import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from '@react-native-community/geolocation';
-import {useDispatch} from 'react-redux';
-import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function HomeScreen() {
+  const dispatch = useDispatch();
   const [location, setLocation] = React.useState({
     lat: 0,
     long: 0,
   });
   const [active, setActive] = React.useState(1);
   const {HEIGHT} = NativeModules?.StatusBarManager;
+  const [temperature, setTemperature] = React.useState(null);
+  const {current} = useSelector(Store => Store.ForecastReducer);
   const apiUrl = `https://api.weatherapi.com/v1/current.json?key=437b42a4ae70478eb8271532230903&q=${location.lat}, ${location.long}&aqi=yes`;
-  const dispatch = useDispatch();
+  console.log(current.condition.text);
 
   const requestLocationPermission = async () => {
     if (Platform.OS === 'android') {
@@ -88,7 +90,8 @@ export default function HomeScreen() {
     getWeatherApi(
       apiUrl,
       response => {
-        console.log(response)
+        console.log(response);
+        setTemperature(response.current.temp_c);
         // console.log(`${response.current.temp_c}`);
       },
       errorResponse => {
@@ -170,6 +173,20 @@ export default function HomeScreen() {
         source={localImages.cloudIcon}
         style={{width: 237, height: 247, alignSelf: 'center'}}
       />
+      <Text
+        style={{
+          color: '#FFFFFF',
+          fontSize: 39.88,
+          fontWeight: '900',
+        }}>
+        {temperature}
+      </Text>
+      <Text
+        style={{
+          color: 'lightgrey',
+        }}>
+        {current.condition.text}
+      </Text>
     </LinearGradient>
   );
 }
