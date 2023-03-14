@@ -4,8 +4,6 @@ import {
   Image,
   FlatList,
   Platform,
-  SafeAreaView,
-  ImageBackground,
   TouchableOpacity,
   PermissionsAndroid,
   NativeModules,
@@ -16,6 +14,8 @@ import {getWeatherApi} from '../../redux/action/index';
 import LinearGradient from 'react-native-linear-gradient';
 import Geolocation from '@react-native-community/geolocation';
 import {useDispatch, useSelector} from 'react-redux';
+import colors from '../../utils/colors';
+import localstrings from '../../utils/strings';
 
 export default function HomeScreen() {
   const dispatch = useDispatch();
@@ -91,7 +91,7 @@ export default function HomeScreen() {
     getWeatherApi(
       apiUrl,
       response => {
-        console.log('response',response);
+        console.log('response', response);
         setTemperature(response.current.temp_c);
         // console.log(`${response.current.temp_c}`);
       },
@@ -117,16 +117,8 @@ export default function HomeScreen() {
     <LinearGradient
       style={{alignItems: 'center', flex: 1, paddingTop: HEIGHT}}
       colors={['#064C61', '#08151E', '#08151E']}>
-      <Text
-        style={{
-          marginTop: 30,
-          color: '#FFFFFF',
-          fontSize: 39.88,
-          fontWeight: '500',
-        }}>
-        Varanasi
-      </Text>
-      <Text style={{color: 'lightgrey', fontSize: 15}}>{'10 Dec, 2022'}</Text>
+      <Text style={styles.vanarsText}>Varanasi</Text>
+      <Text style={styles.dateText}>{localstrings.date}</Text>
       <View
         style={{
           marginTop: 30,
@@ -170,24 +162,9 @@ export default function HomeScreen() {
           }}
         />
       </View>
-      <Image
-        source={localImages.cloudIcon}
-        style={{width: 237, height: 247, alignSelf: 'center'}}
-      />
-      <Text
-        style={{
-          color: '#FFFFFF',
-          fontSize: 39.88,
-          fontWeight: '900',
-        }}>
-        {temperature}
-      </Text>
-      <Text
-        style={{
-          color: 'lightgrey',
-        }}>
-        {current?.condition?.text}
-      </Text>
+      <Image source={localImages.cloudIcon} style={styles.cloudImge} />
+      <Text style={styles.temperatureText}>{temperature}</Text>
+      <Text style={styles.currentCondition}>{current?.condition?.text}</Text>
       <View
         style={{
           flexDirection: 'row',
@@ -196,26 +173,22 @@ export default function HomeScreen() {
           marginVertical: 20,
           alignItems: 'center',
         }}>
-        <Text style={{color: 'white', fontSize: 20}}>Today</Text>
-        <Text style={{color: '#5491E2', fontSize: 21}}>View Full Report</Text>
+        <Text style={styles.todayText}>Today</Text>
+        <Text style={styles.fullReport}>View Full Report</Text>
       </View>
       <FlatList
         data={['', '', '', '', '', '', '', '', '', '', '', '', '', '', '']}
         horizontal
-        style={{width: '90%',borderRadius: 13,backgroundColor: '#2566A333',}}
+        style={{width: '90%', borderRadius: 13, backgroundColor: '#2566A333'}}
         bounces={false}
         contentContainerStyle={{
-          // width: '90%',
           paddingVertical: 20,
           paddingRight: 15,
-          
-          
-          // height: '86%',
         }}
         renderItem={() => {
           return (
-            <View style={{borderWidth: 1,marginLeft: 15,borderRadius: 25,padding: 16,}}>
-              <Text style={{color: 'white',fontSize: 23,}}>28°C</Text>
+            <View style={styles.listItemView}>
+              <Text style={styles.temText}>28°C</Text>
             </View>
           );
         }}
@@ -234,3 +207,31 @@ export const CustomButton = ({...props}) => {
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  vanarsText: {
+    marginTop: 30,
+    color: colors.white,
+    fontSize: 39.88,
+    fontWeight: '500',
+  },
+  dateText: {color: 'lightgrey', fontSize: 15},
+  cloudImge: {width: 237, height: 247, alignSelf: 'center'},
+  listItemView: {
+    borderWidth: 1,
+    marginLeft: 15,
+    borderRadius: 25,
+    padding: 16,
+  },
+  temText: {color: 'white', fontSize: 23},
+  temperatureText: {
+    color: colors.white,
+    fontSize: 39.88,
+    fontWeight: '900',
+  },
+  currentCondition: {
+    color: 'lightgrey',
+  },
+  todayText: {color: 'white', fontSize: 20},
+  fullReport: {color: '#5491E2', fontSize: 21},
+});

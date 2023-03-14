@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 export const getWeatherApi = (apiUrl, successCallback, failureCallback) => {
   return dispatch => {
     axios
